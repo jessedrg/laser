@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 import styles from './SectionHead.module.css';
 
-export function SectionHead({
+export const SectionHead = memo(function SectionHead({
   index,
   eyebrow,
   children,
@@ -19,4 +19,4 @@ export function SectionHead({
       <h2 className={styles.h2}>{children}</h2>
     </div>
   );
-}
+});
