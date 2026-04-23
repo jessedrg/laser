@@ -31,6 +31,7 @@ export async function POST(req: Request) {
           quantity,
         },
       ],
+      phone_number_collection: { enabled: true },
       shipping_address_collection: {
         allowed_countries: [
           'ES', 'PT', 'FR', 'IT', 'DE', 'GB', 'NL', 'BE', 'AT', 'CH',
