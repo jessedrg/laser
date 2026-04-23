@@ -13,15 +13,24 @@ type CartCtx = {
   count: number;
   add: () => void;
   clear: () => void;
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
 };
 
 const CartContext = createContext<CartCtx | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [count, setCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const add = useCallback(() => setCount((c) => c + 1), []);
   const clear = useCallback(() => setCount(0), []);
-  const value = useMemo(() => ({ count, add, clear }), [count, add, clear]);
+  const open = useCallback(() => setIsOpen(true), []);
+  const close = useCallback(() => setIsOpen(false), []);
+  const value = useMemo(
+    () => ({ count, add, clear, isOpen, open, close }),
+    [count, add, clear, isOpen, open, close],
+  );
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 

@@ -87,6 +87,9 @@ const es: Dict = {
   buy: 'Comprar ahora',
   add_to_cart: 'Añadir al carrito',
   shipping_free: 'Envío gratuito · 24–48h',
+  cart_title: 'Tu carrito',
+  cart_empty: 'Tu carrito está vacío',
+  cart_total: 'Total',
 
   // How
   sec_how_eye: 'Cómo funciona',
@@ -250,6 +253,9 @@ const en: Dict = {
   buy: 'Buy now',
   add_to_cart: 'Add to cart',
   shipping_free: 'Free shipping · 24–48h',
+  cart_title: 'Your cart',
+  cart_empty: 'Your cart is empty',
+  cart_total: 'Total',
 
   sec_how_eye: 'How it works',
   sec_how_h_a: 'Three gestures,',
