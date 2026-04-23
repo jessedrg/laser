@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 64" role="img" aria-label="ipllaserstore">
+  <defs>
+    <radialGradient id="spark" cx="35%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#f4c9a8"></stop>
+      <stop offset="55%" stop-color="#c97a4f"></stop>
+      <stop offset="100%" stop-color="#8a3d21"></stop>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d48b60"></stop>
+      <stop offset="100%" stop-color="#a04d28"></stop>
+    </linearGradient>
+  </defs>
+  
+  <g transform="translate(6,6)">
+    <circle cx="26" cy="26" r="25" fill="none" stroke="url(#ring)" stroke-width="1.2"></circle>
+    <circle cx="26" cy="26" r="18" fill="url(#spark)"></circle>
+    
+    <path d="M26 8 Q28 24 44 26 Q28 28 26 44 Q24 28 8 26 Q24 24 26 8 Z" fill="#fdf5ea" opacity=".92"></path>
+    <circle cx="26" cy="26" r="2.2" fill="#8a3d21"></circle>
+  </g>
+  
+  <g transform="translate(72,0)" fill="#2a1d14">
+    <text x="0" y="38" font-family="Fraunces, Georgia, serif" font-weight="300" font-size="28" letter-spacing="-0.02em">
+      ipllaser<tspan font-style="italic" font-weight="300" fill="#6b5544">store</tspan>
+    </text>
+    <text x="1" y="52" font-family="JetBrains Mono, ui-monospace, monospace" font-size="7" letter-spacing="0.22em" fill="#8a7765">
+      HOME IPL · EST. 2026
+    </text>
+  </g>
+</svg>

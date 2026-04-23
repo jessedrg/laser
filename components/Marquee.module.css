@@ -1,0 +1,44 @@
+.ticker {
+  margin-top: 28px;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--bg-2) 10%,
+    var(--bg-2) 90%,
+    transparent
+  );
+}
+
+.track {
+  display: flex;
+  gap: 48px;
+  width: max-content;
+  animation: slide 44s linear infinite;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.track > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.track svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+@keyframes slide {
+  to { transform: translateX(-50%); }
+}

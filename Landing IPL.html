@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ipllaserstore — Depilación IPL en casa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* ---------- tokens ---------- */
+  :root{
+    --bg:        oklch(0.975 0.012 70);
+    --bg-2:      oklch(0.955 0.016 65);
+    --bg-3:      oklch(0.92  0.024 60);
+    --cream:     oklch(0.965 0.020 65);
+    --ink:       oklch(0.20  0.012 55);
+    --ink-2:     oklch(0.40  0.014 55);
+    --ink-3:     oklch(0.60  0.014 55);
+    --line:      oklch(0.87  0.018 65);
+    --line-2:    oklch(0.78  0.022 60);
+    --accent:    oklch(0.67  0.13  40);   /* terracota cálido */
+    --accent-ink:oklch(0.46  0.12  38);
+    --peach:     oklch(0.88  0.060 55);
+    --sage:      oklch(0.82  0.040 140);
+    --page-max:  1400px;
+    --pad-x:     clamp(20px, 4vw, 56px);
+    --r-sm: 10px;
+    --r-md: 18px;
+    --r-lg: 28px;
+    --r-xl: 40px;
+    --r-round: 999px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--accent); color:var(--bg)}
+  a{color:inherit}
+
+  .wrap{max-width:var(--page-max); margin:0 auto; padding-inline:var(--pad-x); position:relative}
+
+  /* type helpers */
+  .serif{ font-family:"Fraunces", ui-serif, Georgia, serif; font-weight:400; }
+  .mono{font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .eyebrow{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-2);
+  }
+
+  /* grain overlay for warmth */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:100;
+    opacity:.5; mix-blend-mode:multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.12  0 0 0 0 0.08  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* soft bg blobs */
+  .blob{
+    position:absolute; border-radius:50%; filter:blur(60px); opacity:.55; pointer-events:none;
+    z-index:0;
+  }
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:sticky; top:14px; z-index:50;
+    margin-inline:auto; max-width:calc(var(--page-max) - 24px);
+    padding:0 calc(var(--pad-x) - 12px);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px; padding:0 22px 0 22px;
+    background:color-mix(in oklab, var(--cream) 78%, transparent);
+    backdrop-filter: saturate(150%) blur(14px);
+    border:1px solid var(--line);
+    border-radius:var(--r-round);
+    box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 12px 30px -18px rgba(80,40,20,.18);
+  }
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink)}
+  .brand-logo{ height:34px; width:auto; display:block }
+  .ft-brand .brand-logo{ height:44px }
+
+  .nav-links{display:flex; align-items:center; gap:6px}
+  .nav-links a{
+    padding:8px 14px; border-radius:var(--r-round);
+    color:var(--ink-2); text-decoration:none; font-size:13px;
+    letter-spacing:0.01em; transition:background .2s, color .2s;
+  }
+  .nav-links a:hover{color:var(--ink); background:color-mix(in oklab, var(--bg-3) 60%, transparent)}
+  .lang{
+    display:inline-flex; align-items:center; gap:2px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; letter-spacing:0.08em;
+    padding:8px 12px;
+    border:1px solid var(--line);
+    border-radius:var(--r-round);
+    background:transparent; color:var(--ink-2); cursor:pointer;
+    transition:all .2s;
+  }
+  .lang:hover{border-color:var(--ink); color:var(--ink)}
+  .lang b{color:var(--ink); font-weight:500}
+  .lang .sep{color:var(--line-2); padding:0 2px}
+  .nav-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 16px 9px 18px; border-radius:var(--r-round);
+    background:var(--ink); color:var(--bg); font-size:12.5px;
+    text-decoration:none; border:1px solid var(--ink);
+    transition:transform .2s, background .2s;
+  }
+  .nav-cta:hover{background:var(--accent-ink); border-color:var(--accent-ink); transform:translateY(-1px)}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    height:52px; padding:0 22px 0 26px;
+    border-radius:var(--r-round);
+    font-size:13.5px; letter-spacing:0.01em;
+    cursor:pointer; text-decoration:none; border:1px solid transparent;
+    transition:transform .25s ease, background .25s, color .25s, border-color .25s, box-shadow .25s;
+    position:relative; overflow:hidden;
+  }
+  .btn-primary{
+    background:var(--ink); color:var(--bg); border-color:var(--ink);
+    box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--ink) 60%, transparent);
+  }
+  .btn-primary:hover{
+    background:var(--accent-ink); border-color:var(--accent-ink);
+    transform:translateY(-2px);
+    box-shadow: 0 16px 30px -10px color-mix(in oklab, var(--accent-ink) 50%, transparent);
+  }
+  .btn-ghost{
+    background:color-mix(in oklab, var(--cream) 70%, transparent);
+    color:var(--ink); border-color:var(--line-2);
+    backdrop-filter:blur(6px);
+  }
+  .btn-ghost:hover{ border-color:var(--ink); transform:translateY(-2px) }
+  .btn .arr{
+    width:26px; height:26px; border-radius:50%;
+    display:inline-flex; align-items:center; justify-content:center;
+    background:color-mix(in oklab, var(--bg) 25%, transparent);
+    transition:transform .25s ease;
+  }
+  .btn-primary .arr{ background:color-mix(in oklab, var(--bg) 18%, transparent) }
+  .btn-ghost .arr{ background:color-mix(in oklab, var(--ink) 10%, transparent) }
+  .btn:hover .arr{ transform:translateX(4px) rotate(-2deg) }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding-top:clamp(24px, 4vw, 56px);
+    padding-bottom:clamp(40px, 6vw, 80px);
+    position:relative;
+  }
+  .hero .blob-1{
+    width:520px; height:520px; top:-120px; right:-140px;
+    background: radial-gradient(circle, var(--peach), transparent 70%);
+  }
+  .hero .blob-2{
+    width:380px; height:380px; bottom:-80px; left:-120px;
+    background: radial-gradient(circle, color-mix(in oklab, var(--sage) 70%, white), transparent 70%);
+    opacity:.45;
+  }
+
+  .hero-top{
+    display:flex; justify-content:space-between; align-items:center;
+    gap:24px; padding:24px 0 28px 0;
+    position:relative; z-index:1;
+  }
+  .hero-top .chips{ display:flex; gap:8px; flex-wrap:wrap }
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--ink-2);
+    padding:7px 14px; border-radius:var(--r-round);
+    background:color-mix(in oklab, var(--cream) 80%, transparent);
+    border:1px solid var(--line);
+  }
+  .chip .tick{
+    width:5px; height:5px; border-radius:50%; background:var(--accent);
+  }
+  .hero-top .meta{ color:var(--ink-2); font-size:13px; max-width:320px; text-align:right }
+
+  .hero-stage{
+    position:relative; z-index:1;
+    display:grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap:clamp(20px, 3vw, 40px);
+    align-items:stretch;
+  }
+  @media (max-width:900px){ .hero-stage{grid-template-columns:1fr} }
+
+  .hero-left{
+    position:relative;
+    padding:clamp(28px, 4vw, 56px) clamp(24px, 3.5vw, 44px);
+    background: linear-gradient(180deg, var(--cream), color-mix(in oklab, var(--cream) 80%, var(--peach) 20%));
+    border-radius: var(--r-xl);
+    border:1px solid var(--line);
+    overflow:hidden;
+    display:flex; flex-direction:column; justify-content:space-between;
+    gap:32px;
+  }
+  .hero-left::before{
+    content:""; position:absolute; bottom:-200px; left:-200px;
+    width:500px; height:500px; border-radius:50%;
+    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 15%, transparent), transparent 70%);
+    pointer-events:none;
+  }
+
+  .hero h1{
+    font-family:"Fraunces", serif;
+    font-weight:300; font-variation-settings:"opsz" 144;
+    font-size:clamp(46px, 6.4vw, 96px);
+    margin:0;
+    letter-spacing:-0.035em;
+    line-height:0.96;
+    position:relative; z-index:1;
+  }
+  .hero h1 .word{
+    display:inline-block;
+    transform:translateY(40px); opacity:0;
+    animation: rise .9s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  .hero h1 .word.w2{ animation-delay:.1s }
+  .hero h1 .word.w3{ animation-delay:.2s; font-style:italic; font-weight:300; color:var(--ink-2)}
+  .hero h1 .word.w4{ animation-delay:.3s; font-style:italic; font-weight:300; color:var(--ink-2)}
+  @keyframes rise{ to{ transform:translateY(0); opacity:1 } }
+  .hero h1 .dot{ color:var(--accent); display:inline-block; animation: pop 1s .7s ease forwards; transform:scale(0); opacity:0 }
+  @keyframes pop{ to{transform:scale(1); opacity:1} }
+
+  .hero-sub{
+    display:grid; grid-template-columns: 1.4fr 1fr; gap:28px; align-items:end;
+    position:relative; z-index:1;
+  }
+  @media (max-width:560px){ .hero-sub{grid-template-columns:1fr} }
+
+  .hero-lead{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:clamp(18px, 1.7vw, 21px);
+    line-height:1.4; color:var(--ink);
+    margin:0; max-width:34ch; letter-spacing:-0.005em;
+  }
+  .hero-lead em{ color:var(--ink-2); font-style:italic}
+
+  .cta-row{display:flex; gap:10px; flex-wrap:wrap}
+
+  .hero-stats{
+    display:flex; gap:28px; flex-wrap:wrap;
+    padding-top:22px; border-top:1px solid color-mix(in oklab, var(--line) 80%, transparent);
+  }
+  .hstat .n{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:38px; letter-spacing:-0.025em; line-height:1;
+  }
+  .hstat .n sup{ font-size:18px; color:var(--ink-2); margin-left:2px}
+  .hstat .l{
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--ink-3); margin-top:8px;
+  }
+
+  /* right visual */
+  .hero-right{
+    position:relative; border-radius:var(--r-xl); overflow:hidden;
+    min-height:540px;
+    background:
+      radial-gradient(80% 60% at 30% 20%, color-mix(in oklab, var(--peach) 60%, white), transparent 70%),
+      linear-gradient(160deg, var(--bg-3), color-mix(in oklab, var(--bg-3) 60%, var(--accent) 25%));
+    border:1px solid var(--line);
+    isolation:isolate;
+  }
+  .hero-photo{
+    position:absolute; inset:0;
+    background-image: url('assets/hero.png');
+    background-size:cover;
+    background-position: center 30%;
+    will-change: transform;
+  }
+  .hero-photo::after{
+    content:""; position:absolute; inset:0;
+    background: linear-gradient(180deg, transparent 40%, color-mix(in oklab, var(--ink) 30%, transparent) 100%);
+  }
+  .hero-right .tag{
+    position:absolute; bottom:22px; left:22px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--ink-2);
+    background:color-mix(in oklab, var(--cream) 90%, transparent);
+    padding:8px 14px; border-radius:var(--r-round);
+    backdrop-filter:blur(6px);
+    border:1px solid var(--line);
+  }
+  .hero-right .live{
+    position:absolute; top:22px; left:22px;
+    display:flex; align-items:center; gap:10px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ink);
+    background:color-mix(in oklab, var(--cream) 88%, transparent);
+    padding:9px 14px 9px 12px; border-radius:var(--r-round);
+    backdrop-filter:blur(6px);
+    border:1px solid var(--line);
+  }
+  .hero-right .live .d{
+    width:7px; height:7px; border-radius:50%; background:var(--accent);
+    animation:pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 color-mix(in oklab, var(--accent) 60%, transparent)}
+    70%{box-shadow:0 0 0 12px transparent}
+    100%{box-shadow:0 0 0 0 transparent}
+  }
+
+  /* floating cards on the hero photo */
+  .floater{
+    position:absolute; z-index:3;
+    padding:14px 16px; border-radius:var(--r-md);
+    background:color-mix(in oklab, var(--cream) 92%, transparent);
+    border:1px solid var(--line);
+    backdrop-filter:blur(10px);
+    box-shadow: 0 20px 40px -18px rgba(80,40,20,.25);
+    display:flex; flex-direction:column; gap:6px;
+    animation: float 8s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+  .floater .k{
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3);
+  }
+  .floater .v{
+    font-family:"Fraunces", serif; font-size:22px; font-weight:400; letter-spacing:-0.015em;
+  }
+  .floater.f1{ top:26%; right:22px; animation-delay:-1s}
+  .floater.f2{ bottom:26%; left:22px; animation-delay:-3s}
+
+  /* ticker */
+  .ticker{
+    margin-top:28px; position:relative; z-index:1;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:16px 0; overflow:hidden;
+    background:linear-gradient(90deg, transparent, var(--bg-2) 10%, var(--bg-2) 90%, transparent);
+  }
+  .ticker-track{
+    display:flex; gap:48px; width:max-content;
+    animation:slide 44s linear infinite;
+    font-family:"Fraunces", serif; font-weight:300; font-style:italic;
+    font-size:22px; color:var(--ink-2); white-space:nowrap;
+  }
+  .ticker-track > span{ display:inline-flex; align-items:center; gap:48px}
+  .ticker-track svg{flex:0 0 auto; color:var(--accent)}
+  @keyframes slide{ to{ transform:translateX(-50%) } }
+
+  /* ---------- section shell ---------- */
+  section.sec{ padding-block: clamp(80px, 10vw, 150px); position:relative }
+  .sec-head{
+    display:grid; grid-template-columns: 220px 1fr; gap: clamp(24px, 5vw, 80px);
+    align-items:start; margin-bottom:clamp(40px, 5vw, 72px);
+  }
+  @media (max-width:780px){ .sec-head{grid-template-columns:1fr} }
+  .sec-head .label{ padding-top:8px; display:flex; align-items:center; gap:12px}
+  .sec-head h2{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:clamp(40px, 6vw, 84px);
+    line-height:0.98; letter-spacing:-0.03em; margin:0; max-width:20ch;
+  }
+  .sec-head h2 em{ color:var(--ink-2); font-style:italic; font-weight:300}
+  .sec-head h2 .ink-ac{ color:var(--accent) }
+  .sec-ix{
+    font-family:"Fraunces", serif; font-style:italic; font-weight:300;
+    font-size:30px; color:var(--accent); line-height:1;
+  }
+
+  /* ---------- benefits ---------- */
+  .benefits{
+    display:grid; grid-template-columns: repeat(4, 1fr);
+    gap:18px;
+  }
+  @media (max-width:900px){ .benefits{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:560px){ .benefits{grid-template-columns:1fr} }
+  .benefit{
+    padding:28px 26px 32px;
+    background:var(--cream); border:1px solid var(--line);
+    border-radius:var(--r-lg);
+    display:flex; flex-direction:column; gap:14px;
+    position:relative; overflow:hidden;
+    transition:transform .4s ease, border-color .4s ease, box-shadow .4s ease;
+  }
+  .benefit:hover{
+    transform:translateY(-6px);
+    border-color:var(--accent);
+    box-shadow: 0 30px 50px -24px color-mix(in oklab, var(--accent) 40%, transparent);
+  }
+  .benefit::after{
+    content:""; position:absolute; right:-60px; bottom:-60px;
+    width:160px; height:160px; border-radius:50%;
+    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 14%, transparent), transparent 70%);
+    transform:scale(0); transition:transform .5s ease;
+  }
+  .benefit:hover::after{ transform:scale(1.2) }
+  .benefit .ix{ font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink-3) }
+  .benefit h3{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:26px; line-height:1.08; letter-spacing:-0.015em; margin:0;
+  }
+  .benefit h3 em{color:var(--accent); font-style:italic}
+  .benefit p{margin:0; color:var(--ink-2); font-size:14px; line-height:1.6}
+  .benefit .glyph{
+    width:52px; height:52px; border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    background:color-mix(in oklab, var(--accent) 12%, transparent);
+    color:var(--accent-ink);
+    transition:transform .4s ease, background .4s ease;
+  }
+  .benefit:hover .glyph{
+    transform:rotate(-4deg) scale(1.05);
+    background:color-mix(in oklab, var(--accent) 22%, transparent);
+  }
+
+  /* ---------- product ---------- */
+  #product{ background:
+    radial-gradient(70% 40% at 50% 0%, color-mix(in oklab, var(--peach) 35%, transparent), transparent 70%),
+    var(--bg);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .product{
+    display:grid; grid-template-columns: 1fr 1fr;
+    gap:clamp(28px, 5vw, 60px); align-items:stretch;
+  }
+  @media (max-width:900px){ .product{grid-template-columns:1fr} }
+
+  .product-duo{
+    display:grid; grid-template-rows: 1.25fr 1fr; gap:14px;
+  }
+  .product-stage{
+    position:relative; border-radius:var(--r-xl);
+    aspect-ratio:1/1.05; overflow:hidden;
+    background: linear-gradient(160deg, var(--cream), color-mix(in oklab, var(--cream) 70%, var(--peach) 30%));
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    isolation:isolate;
+  }
+  .product-stage::before{
+    content:""; position:absolute; inset:10%;
+    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 18%, transparent), transparent 65%);
+    filter:blur(30px); z-index:0;
+  }
+  .product-stage .device-img{
+    position:relative; z-index:2; width:78%; height:auto; max-height:92%; object-fit:contain;
+    filter: drop-shadow(0 40px 40px rgba(40,20,10,.25));
+    animation: floatY 6s ease-in-out infinite;
+  }
+  .product-detail{
+    position:relative; border-radius:var(--r-xl); overflow:hidden;
+    background: linear-gradient(160deg, var(--cream), color-mix(in oklab, var(--cream) 70%, var(--peach) 30%));
+    border:1px solid var(--line);
+    aspect-ratio: 4/3;
+  }
+  .product-detail img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position: center 40%;
+    transition: transform .8s ease;
+  }
+  .product-detail:hover img{ transform: scale(1.05) }
+  .product-detail .tagp{
+    position:absolute; bottom:16px; left:16px;
+    font-family:"JetBrains Mono", monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--ink-2);
+    background:color-mix(in oklab, var(--cream) 92%, transparent);
+    padding:7px 12px; border-radius:var(--r-round);
+    backdrop-filter:blur(6px); border:1px solid var(--line);
+  }
+  .product-stage .rotator{
+    position:absolute; inset:12%; border-radius:50%;
+    border:1px dashed color-mix(in oklab, var(--accent) 50%, transparent);
+    animation: spin 40s linear infinite;
+    pointer-events:none;
+  }
+  .product-stage .rotator::before,
+  .product-stage .rotator::after{
+    content:""; position:absolute; width:8px; height:8px; border-radius:50%; background:var(--accent);
+    top:50%; margin-top:-4px;
+  }
+  .product-stage .rotator::before{left:-4px}
+  .product-stage .rotator::after{right:-4px}
+  @keyframes spin{ to{ transform:rotate(360deg) } }
+
+  .device-wrap{
+    position:relative; z-index:1; width:60%; aspect-ratio:3/5;
+    animation: floatY 6s ease-in-out infinite;
+  }
+  @keyframes floatY{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .device{
+    position:relative; width:100%; height:100%;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .device .head{
+    width:100%; height:62%;
+    background: linear-gradient(180deg, oklch(0.30 0.016 55), oklch(0.18 0.012 55));
+    border-radius: 32% 32% 22% 22% / 18% 18% 12% 12%;
+    position:relative;
+    box-shadow:
+      inset 0 -24px 46px rgba(0,0,0,.45),
+      inset 0 2px 0 rgba(255,255,255,.08),
+      0 40px 60px -24px rgba(80,40,20,.35);
+  }
+  .device .screen{
+    position:absolute; inset: 10% 8% 18% 8%;
+    background: oklch(0.09 0.008 55);
+    border-radius:18px;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    color: oklch(0.92 0.02 55); gap:8%; padding:4%;
+    box-shadow: inset 0 0 30px oklch(0.40 0.08 45 / 0.15);
+  }
+  .device .screen .readout{
+    font-family:"JetBrains Mono", monospace; font-weight:500;
+    font-size: clamp(22px, 2.8vw, 36px); letter-spacing:0.06em;
+    color: oklch(0.80 0.12 50);
+    text-shadow: 0 0 12px oklch(0.70 0.15 50 / 0.5);
+  }
+  .device .screen .minor{
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:0.22em; opacity:.6; text-transform:uppercase;
+  }
+  .device .screen .fan{display:flex; gap:3px; align-items:flex-end; height:22%}
+  .device .screen .fan i{ display:block; width:8%; min-width:4px; background:oklch(0.75 0.02 55 / .65); border-radius:2px 2px 0 0 }
+  .device .screen .fan i:nth-child(1){height:30%} .device .screen .fan i:nth-child(2){height:55%}
+  .device .screen .fan i:nth-child(3){height:80%} .device .screen .fan i:nth-child(4){height:100%}
+  .device .screen .fan i:nth-child(5){height:80%} .device .screen .fan i:nth-child(6){height:55%}
+  .device .screen .fan i:nth-child(7){height:30%}
+  .device .btn-ring{
+    position:absolute; bottom:7%; left:50%; transform:translateX(-50%);
+    width:22%; aspect-ratio:1; border-radius:50%;
+    background: radial-gradient(circle at 50% 45%, oklch(0.88 0.12 55), oklch(0.60 0.13 45) 60%, oklch(0.38 0.10 40) 100%);
+    box-shadow: 0 0 24px oklch(0.70 0.14 45 / 0.65), inset 0 0 8px rgba(0,0,0,.4);
+    animation: glow 3s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{box-shadow: 0 0 24px oklch(0.70 0.14 45 / 0.65), inset 0 0 8px rgba(0,0,0,.4)}
+    50%{box-shadow: 0 0 40px oklch(0.72 0.16 50 / 0.9), inset 0 0 8px rgba(0,0,0,.4)}
+  }
+  .device .handle{
+    width:44%; height:38%;
+    background: linear-gradient(180deg, oklch(0.26 0.014 55), oklch(0.18 0.010 55));
+    margin-top:-2%;
+    border-radius: 0 0 44% 44% / 0 0 32% 32%;
+    box-shadow: 0 30px 40px -20px rgba(80,40,20,.3);
+  }
+
+  /* product info */
+  .product-info{ display:flex; flex-direction:column; gap:26px; padding-top:8px }
+  .product-info .kicker{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
+  .pill{
+    font-family:"JetBrains Mono", monospace;
+    font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--accent-ink); padding:6px 12px;
+    background:color-mix(in oklab, var(--accent) 14%, transparent);
+    border-radius:var(--r-round);
+  }
+  .product-info h3{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:clamp(32px, 3.8vw, 50px); letter-spacing:-0.022em; line-height:1.02; margin:0;
+  }
+  .product-info h3 em{color:var(--ink-2); font-style:italic}
+  .product-info .desc{ color:var(--ink-2); max-width:46ch; margin:0; font-size:15.5px; line-height:1.6}
+
+  .specs{
+    display:grid; grid-template-columns: repeat(3,1fr);
+    gap:10px;
+  }
+  @media (max-width:620px){ .specs{grid-template-columns:repeat(2,1fr)} }
+  .spec{
+    padding:16px; background:var(--cream); border:1px solid var(--line);
+    border-radius:var(--r-md);
+    display:flex; flex-direction:column; gap:4px;
+    transition:transform .3s, border-color .3s;
+  }
+  .spec:hover{ transform:translateY(-3px); border-color:var(--accent) }
+  .spec .k{ font-family:"JetBrains Mono", monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3)}
+  .spec .v{ font-family:"Fraunces", serif; font-size:24px; font-weight:300; letter-spacing:-0.015em }
+
+  .buy-row{
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+    padding:20px 24px;
+    background:var(--ink); color:var(--bg);
+    border-radius:var(--r-lg);
+    flex-wrap:wrap;
+  }
+  .buy-row .price{ display:flex; align-items:baseline; gap:10px }
+  .buy-row .price .now{ font-family:"Fraunces", serif; font-size:34px; font-weight:300; letter-spacing:-0.02em}
+  .buy-row .price .was{ color:color-mix(in oklab, var(--bg) 60%, transparent); text-decoration:line-through; font-size:14px }
+  .buy-row .price .save{
+    font-family:"JetBrains Mono", monospace; font-size:10.5px;
+    letter-spacing:0.14em; text-transform:uppercase;
+    color:oklch(0.80 0.12 55); padding:4px 10px;
+    background:color-mix(in oklab, var(--accent) 40%, transparent);
+    border-radius:var(--r-round);
+  }
+  .buy-row .btn-cart{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:14px 18px 14px 22px; border-radius:var(--r-round);
+    background:var(--bg); color:var(--ink); text-decoration:none;
+    font-size:13.5px; transition:transform .2s;
+  }
+  .buy-row .btn-cart:hover{transform:translateY(-2px)}
+
+  /* ---------- how ---------- */
+  .steps{
+    display:grid; grid-template-columns: repeat(3,1fr); gap:18px;
+    position:relative;
+  }
+  @media (max-width:820px){ .steps{grid-template-columns:1fr} }
+  .step{
+    padding:36px 30px 40px;
+    background:var(--cream); border:1px solid var(--line);
+    border-radius:var(--r-lg);
+    position:relative; overflow:hidden;
+    transition:transform .4s, box-shadow .4s;
+  }
+  .step:hover{ transform:translateY(-4px); box-shadow: 0 30px 50px -24px rgba(80,40,20,.18) }
+  .step .num-big{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:clamp(72px, 9vw, 120px); line-height:0.9; letter-spacing:-0.04em;
+    color:var(--ink); display:block; margin-bottom:18px;
+  }
+  .step .num-big em{ color:var(--accent); font-style:italic}
+  .step h4{
+    font-family:"Fraunces", serif; font-weight:400; font-size:26px;
+    letter-spacing:-0.015em; margin:0 0 10px 0;
+  }
+  .step p{ color:var(--ink-2); margin:0 0 20px 0; font-size:14.5px; max-width:34ch }
+  .step .meta{
+    display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .step .meta span{
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3);
+    padding:6px 10px; border-radius:var(--r-round);
+    background:var(--bg); border:1px solid var(--line);
+  }
+  .step .meta em{color:var(--ink); font-style:normal}
+
+  /* ---------- results ---------- */
+  #results{
+    background: linear-gradient(180deg, var(--bg), color-mix(in oklab, var(--bg) 80%, var(--peach) 20%));
+  }
+  .results-grid{
+    display:grid; grid-template-columns: 1.2fr 1fr; gap:clamp(24px, 3vw, 40px);
+    align-items:stretch;
+  }
+  @media (max-width:900px){ .results-grid{grid-template-columns:1fr} }
+  .compare{
+    position:relative; aspect-ratio: 4/3;
+    background:var(--bg-3);
+    border-radius:var(--r-xl); overflow:hidden;
+    user-select:none; cursor: ew-resize;
+    border:1px solid var(--line);
+  }
+  .compare .pane{
+    position:absolute; inset:0;
+    background-image: url('assets/antes.png');
+    background-size:cover; background-position:center;
+  }
+  .compare .pane.after{
+    background-image: url('assets/despues.png');
+    clip-path: inset(0 0 0 var(--clip, 50%));
+  }
+  .compare .tagp{
+    position:absolute; top:18px;
+    font-family:"JetBrains Mono", monospace; font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--ink-2);
+    background:color-mix(in oklab, var(--cream) 92%, transparent);
+    padding:7px 12px; border-radius:var(--r-round);
+    backdrop-filter:blur(4px); border:1px solid var(--line);
+  }
+  .compare .tagp.a{left:18px} .compare .tagp.b{right:18px}
+  .compare .handle{
+    position:absolute; top:0; bottom:0; left:var(--clip, 50%);
+    width:1px; background:var(--ink); transform:translateX(-0.5px);
+  }
+  .compare .handle::after{
+    content:""; position:absolute; top:50%; left:50%;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--cream); border:1px solid var(--ink);
+    transform:translate(-50%, -50%);
+    box-shadow: 0 8px 20px -8px rgba(80,40,20,.3);
+  }
+  .compare .handle::before{
+    content:"⇔"; position:absolute; top:50%; left:50%;
+    transform:translate(-50%, -50%); z-index:2;
+    color:var(--ink); font-size:13px; font-family:"JetBrains Mono", monospace;
+  }
+
+  .results-side{display:flex; flex-direction:column; gap:24px; justify-content:space-between}
+  .timeline{
+    background:var(--cream); border:1px solid var(--line); border-radius:var(--r-lg);
+    padding:8px 22px;
+  }
+  .tl-row{
+    display:grid; grid-template-columns: 80px 1fr auto;
+    gap:16px; align-items:baseline;
+    padding:18px 0; border-bottom:1px solid var(--line);
+  }
+  .tl-row:last-child{border-bottom:0}
+  .tl-row .w{ font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3)}
+  .tl-row .t{ font-family:"Fraunces", serif; font-size:19px; font-weight:300; letter-spacing:-0.015em }
+  .tl-row .t em{color:var(--ink-2)}
+  .tl-row .pct{ font-family:"JetBrains Mono", monospace; font-size:12px; color:var(--ink)}
+  .tl-row.done .pct{color:var(--accent-ink); font-weight:500}
+
+  .quote{
+    padding:26px 28px;
+    background:var(--ink); color:var(--bg);
+    border-radius:var(--r-lg); position:relative; overflow:hidden;
+  }
+  .quote::before{
+    content:"\201C"; position:absolute; top:-30px; left:10px;
+    font-family:"Fraunces", serif; font-size:180px; line-height:1;
+    color:color-mix(in oklab, var(--accent) 70%, transparent);
+    font-style:italic;
+  }
+  .quote q{
+    quotes:none;
+    font-family:"Fraunces", serif; font-weight:300; font-style:italic;
+    font-size:clamp(18px, 1.6vw, 22px); line-height:1.4; letter-spacing:-0.005em;
+    display:block; margin-bottom:16px; position:relative; z-index:1;
+  }
+  .quote q::before, .quote q::after{content:''}
+  .quote .who{
+    display:flex; align-items:center; gap:12px;
+    font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.12em;
+    text-transform:uppercase; color:color-mix(in oklab, var(--bg) 70%, transparent);
+    position:relative; z-index:1;
+  }
+  .quote .who .av{
+    width:28px; height:28px; border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, var(--peach), var(--accent));
+  }
+
+  /* ---------- blog ---------- */
+  #blog{
+    background:var(--bg-2);
+    border-top:1px solid var(--line);
+  }
+  .blog-head{
+    display:flex; justify-content:space-between; align-items:end; gap:24px; flex-wrap:wrap;
+    margin-bottom:40px;
+  }
+  .blog-head h2{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:clamp(40px, 5.8vw, 78px); letter-spacing:-0.028em; line-height:1; margin:0;
+  }
+  .blog-head h2 em{ color:var(--ink-2); font-style:italic}
+  .blog-head .link{
+    font-family:"JetBrains Mono", monospace; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--ink); text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 16px; border:1px solid var(--ink); border-radius:var(--r-round);
+    transition:all .2s;
+  }
+  .blog-head .link:hover{background:var(--ink); color:var(--bg)}
+
+  .blog-grid{
+    display:grid; grid-template-columns: 1.3fr 1fr 1fr;
+    gap:18px; align-items:stretch;
+  }
+  @media (max-width:900px){ .blog-grid{grid-template-columns:1fr 1fr} }
+  @media (max-width:560px){ .blog-grid{grid-template-columns:1fr} }
+
+  .post{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--cream); border:1px solid var(--line);
+    border-radius:var(--r-lg); overflow:hidden;
+    transition:transform .4s, box-shadow .4s, border-color .4s;
+    position:relative;
+  }
+  .post:hover{
+    transform:translateY(-4px);
+    box-shadow:0 30px 50px -24px rgba(80,40,20,.18);
+    border-color:var(--accent);
+  }
+  .post .cover{
+    aspect-ratio:16/10;
+    background:
+      linear-gradient(160deg,
+        color-mix(in oklab, var(--peach) 40%, var(--bg-3)),
+        color-mix(in oklab, var(--bg-3) 70%, var(--accent) 18%));
+    position:relative; overflow:hidden;
+    transition:transform .5s ease;
+  }
+  .post .cover img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    object-position: center center;
+    transition: transform .8s ease;
+  }
+  .post.hero-post .cover img{ object-position: center 28% }
+  .post:hover .cover img{ transform: scale(1.06) }
+  .post:hover .cover{ transform:scale(1.03) }
+  .post.hero-post .cover{ aspect-ratio: 16/11 }
+  .post .cover .ph{
+    position:absolute; bottom:14px; left:14px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--ink-2);
+    background:color-mix(in oklab, var(--cream) 92%, transparent);
+    padding:6px 10px; border-radius:var(--r-round);
+    border:1px solid var(--line);
+  }
+  .post .cover .cat{
+    position:absolute; top:14px; left:14px;
+    font-family:"JetBrains Mono", monospace;
+    font-size:10px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--accent-ink);
+    background:color-mix(in oklab, var(--cream) 92%, transparent);
+    padding:6px 10px; border-radius:var(--r-round);
+    border:1px solid var(--line);
+  }
+  .post .body{
+    padding:22px 24px 26px;
+  }
+  .post .body .meta{
+    font-family:"JetBrains Mono", monospace; font-size:10.5px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--ink-3); margin-bottom:10px;
+    display:flex; gap:12px; align-items:center;
+  }
+  .post .body h3{
+    font-family:"Fraunces", serif; font-weight:400;
+    font-size:22px; line-height:1.2; letter-spacing:-0.015em; margin:0 0 8px 0;
+  }
+  .post.hero-post .body h3{ font-size:30px }
+  .post .body p{ color:var(--ink-2); margin:0; font-size:14.5px }
+  .post.hero-post{ grid-row: span 2; display:flex; flex-direction:column }
+  .post.hero-post .cover{ aspect-ratio: auto; flex:1; min-height:340px }
+  @media (max-width:900px){ .post.hero-post{ grid-row: auto; grid-column: span 2 } .post.hero-post .cover{ aspect-ratio: 16/10; min-height:0 } }
+  @media (max-width:560px){ .post.hero-post{ grid-column: auto } }
+
+  /* ---------- CTA ---------- */
+  .cta{
+    padding:clamp(50px, 7vw, 90px) clamp(28px, 4vw, 56px);
+    background:
+      radial-gradient(70% 80% at 90% 10%, color-mix(in oklab, var(--peach) 50%, transparent), transparent 70%),
+      var(--ink);
+    color:var(--bg);
+    border-radius:var(--r-xl);
+    position:relative; overflow:hidden;
+    margin-block: clamp(60px, 8vw, 120px);
+  }
+  .cta .sw{
+    position:absolute; right:-100px; top:-100px;
+    width:500px; height:500px; border-radius:50%;
+    background: radial-gradient(circle, color-mix(in oklab, var(--accent) 50%, transparent), transparent 70%);
+    filter:blur(30px);
+  }
+  .cta-inner{
+    display:grid; grid-template-columns: 1.3fr 1fr; gap:clamp(24px, 4vw, 48px);
+    align-items:end; position:relative; z-index:1;
+  }
+  @media (max-width:820px){ .cta-inner{grid-template-columns:1fr} }
+  .cta h2{
+    font-family:"Fraunces", serif; font-weight:300;
+    font-size:clamp(44px, 7vw, 108px);
+    line-height:0.96; letter-spacing:-0.03em; margin:0;
+  }
+  .cta h2 em{ color:color-mix(in oklab, var(--bg) 60%, transparent); font-style:italic}
+  .cta h2 .ac{color:var(--accent)}
+  .cta-side{ display:flex; flex-direction:column; gap:18px; color:color-mix(in oklab, var(--bg) 75%, transparent); font-size:14.5px; max-width:36ch }
+  .cta-side .btn-primary{ background:var(--bg); color:var(--ink); border-color:var(--bg)}
+  .cta-side .btn-primary:hover{ background:var(--accent); border-color:var(--accent); color:var(--bg) }
+
+  /* footer */
+  footer.ft{
+    padding-block:48px 48px;
+    border-top:1px solid var(--line);
+  }
+  .ft-top{
+    display:grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap:40px;
+    padding-bottom:40px; border-bottom:1px solid var(--line);
+  }
+  @media (max-width:780px){ .ft-top{grid-template-columns:1fr 1fr} }
+  .ft-top h4{
+    font-family:"JetBrains Mono", monospace; font-size:10.5px; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--ink-3); margin:0 0 14px 0; font-weight:500;
+  }
+  .ft-col ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
+  .ft-col a{ color:var(--ink-2); text-decoration:none; font-size:14px}
+  .ft-col a:hover{color:var(--ink)}
+  .ft-brand .tag{
+    font-family:"Fraunces", serif; font-size:28px; font-weight:300; letter-spacing:-0.02em;
+    line-height:1.1; margin-top:10px; max-width:26ch; color:var(--ink);
+  }
+  .ft-brand .tag em{color:var(--ink-2); font-style:italic}
+  .ft-bot{
+    padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    font-family:"JetBrains Mono", monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--ink-3);
+  }
+
+  /* reveal */
+  .reveal{ opacity:0; transform:translateY(20px);
+    transition: opacity 1s ease, transform 1s cubic-bezier(.2,.7,.2,1);
+    transition-delay: var(--d, 0s);
+  }
+  .reveal.in{ opacity:1; transform:none }
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .hero h1 .word, .hero h1 .dot, .floater, .device-wrap, .ticker-track, .product-stage .rotator, .device .btn-ring{
+      animation:none !important; transition:none !important; opacity:1 !important; transform:none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- floating nav pill -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#" aria-label="ipllaserstore">
+      <img class="brand-logo" src="assets/logo.svg" alt="ipllaserstore" />
+    </a>
+    <div class="nav-links">
+      <a href="#why" data-i18n="nav_why">Por qué IPL</a>
+      <a href="#product" data-i18n="nav_product">Producto</a>
+      <a href="#how" data-i18n="nav_how">Cómo funciona</a>
+      <a href="#results" data-i18n="nav_results">Resultados</a>
+      <a href="#blog" data-i18n="nav_blog">Blog</a>
+      <button class="lang" id="lang" aria-label="Cambiar idioma">
+        <b id="lang-cur">ES</b><span class="sep">/</span><span id="lang-alt">EN</span>
+      </button>
+      <a class="nav-cta" href="#product" data-i18n="nav_cta">Comprar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="wrap">
+
+    <div class="hero-top">
+      <div class="chips">
+        <span class="chip"><span class="tick"></span><span data-i18n="ch1">Envío gratis 24–48h</span></span>
+        <span class="chip"><span class="tick"></span><span data-i18n="ch2">Garantía 2 años</span></span>
+        <span class="chip"><span class="tick"></span><span data-i18n="ch3">60 días devolución</span></span>
+      </div>
+      <div class="meta" data-i18n="hero_meta">★ 4,9 · 12.480 clientas · Valoración verificada</div>
+    </div>
+
+    <div class="hero-stage">
+
+      <div class="hero-left">
+        <span class="eyebrow" data-i18n="hero_eyebrow">Depilación IPL · Edición 2026</span>
+
+        <h1>
+          <span class="word w1" data-i18n="h1_l1">Piel tuya,</span><br/>
+          <span class="word w2" data-i18n="h1_l2">a tu ritmo</span><span class="dot">.</span><br/>
+          <span class="word w3" data-i18n="h1_l3">Sin</span> <span class="word w4" data-i18n="h1_l4">prisa.</span>
+        </h1>
+
+        <div class="hero-sub">
+          <div>
+            <p class="hero-lead">
+              <span data-i18n="lead">Depiladoras IPL de uso profesional, pensadas para rutinas de casa. <em>Sin citas, sin dolor, sin prisa</em> — resultados visibles desde la tercera sesión.</span>
+            </p>
+            <div class="cta-row" style="margin-top:22px">
+              <a class="btn btn-primary" href="#product">
+                <span data-i18n="cta_primary">Ver dispositivos</span>
+                <span class="arr">
+                  <svg width="12" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.4"/></svg>
+                </span>
+              </a>
+              <a class="btn btn-ghost" href="#how"><span data-i18n="cta_secondary">Cómo funciona</span></a>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="hstat"><div class="n">999K</div><div class="l" data-i18n="stat_flashes">Flashes</div></div>
+            <div class="hstat"><div class="n">93<sup>%</sup></div><div class="l" data-i18n="stat_reduction">Reducción</div></div>
+            <div class="hstat"><div class="n">2<span class="mono" style="font-size:18px; margin-left:4px">y</span></div><div class="l" data-i18n="stat_warranty">Garantía</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-photo" data-parallax></div>
+        <div class="live">
+          <span class="d"></span>
+          <span data-i18n="hero_badge">En vivo · 4.812 pedidos este mes</span>
+        </div>
+
+        <div class="floater f1">
+          <span class="k" data-i18n="flo1_k">Ice Cool</span>
+          <span class="v">–4 °C</span>
+        </div>
+        <div class="floater f2">
+          <span class="k" data-i18n="flo2_k">Sesión</span>
+          <span class="v" data-i18n="flo2_v">10 min</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</header>
+
+<!-- ticker -->
+<div class="wrap">
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>
+        <span data-i18n="mq1">Sin dolor</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq2">Apta para pieles sensibles</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq3">Uso ilimitado en casa</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq4">Resultados permanentes</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq5">Tecnología Ice Cool</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+      </span>
+      <span>
+        <span data-i18n="mq1">Sin dolor</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq2">Apta para pieles sensibles</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq3">Uso ilimitado en casa</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq4">Resultados permanentes</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+        <span data-i18n="mq5">Tecnología Ice Cool</span>
+        <svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="2" fill="currentColor"/></svg>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- BENEFITS -->
+<section class="sec" id="why">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="label">
+        <span class="sec-ix">01</span>
+        <span class="eyebrow" data-i18n="sec_why_eye">Por qué IPL</span>
+      </div>
+      <h2><span data-i18n="sec_why_h_a">El método que la clínica</span> <em data-i18n="sec_why_h_b">nunca quiso compartir</em><span class="ink-ac">.</span></h2>
+    </div>
+
+    <div class="benefits">
+      <div class="benefit reveal">
+        <div class="glyph">
+          <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+            <circle cx="17" cy="17" r="3" fill="currentColor"/>
+            <path d="M17 2v6M17 26v6M2 17h6M26 17h6M6 6l4 4M24 24l4 4M28 6l-4 4M6 28l4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ix">01</span>
+        <h3 data-i18n="b1_h">Luz pulsada <em>precisa</em>.</h3>
+        <p data-i18n="b1_p">Cada destello actúa sobre el folículo sin tocar la piel circundante. Rápido, dirigido, repetible.</p>
+      </div>
+      <div class="benefit reveal" style="--d:.08s">
+        <div class="glyph">
+          <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+            <path d="M17 4c6 6 10 10 10 15a10 10 0 01-20 0c0-5 4-9 10-15z" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M12 20c0 3 2 5 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ix">02</span>
+        <h3 data-i18n="b2_h">Ice Cool real, <em>–4 °C</em>.</h3>
+        <p data-i18n="b2_p">El cabezal enfría la piel en el instante del pulso. Nada de rojeces, nada de esperas con gel frío.</p>
+      </div>
+      <div class="benefit reveal" style="--d:.16s">
+        <div class="glyph">
+          <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+            <rect x="6" y="6" width="22" height="22" rx="3" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M6 13h22M13 6v22" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+        </div>
+        <span class="ix">03</span>
+        <h3 data-i18n="b3_h">999.000 <em>flashes</em>.</h3>
+        <p data-i18n="b3_p">Una vida útil pensada para que la compres una sola vez y la compartas con quien quieras.</p>
+      </div>
+      <div class="benefit reveal" style="--d:.24s">
+        <div class="glyph">
+          <svg width="26" height="26" viewBox="0 0 34 34" fill="none">
+            <path d="M8 17c3-5 7-7 9-7s6 2 9 7c-3 5-7 7-9 7s-6-2-9-7z" stroke="currentColor" stroke-width="1.4"/>
+            <circle cx="17" cy="17" r="3" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+        </div>
+        <span class="ix">04</span>
+        <h3 data-i18n="b4_h">Sensor <em>de piel</em>.</h3>
+        <p data-i18n="b4_p">Ajusta la intensidad automáticamente según tu tono. Piel clara, media u oliva: todas cuidadas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="sec" id="product">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="label">
+        <span class="sec-ix">02</span>
+        <span class="eyebrow" data-i18n="sec_prod_eye">Producto destacado</span>
+      </div>
+      <h2><span data-i18n="sec_prod_h_a">Un dispositivo,</span> <em data-i18n="sec_prod_h_b">pensado para durar</em>.</h2>
+    </div>
+
+    <div class="product">
+      <div class="product-duo reveal">
+        <div class="product-stage">
+          <div class="rotator"></div>
+          <img class="device-img" src="assets/producto-frontal.png" alt="Lumière 04 — vista frontal" />
+        </div>
+        <div class="product-detail">
+          <img src="assets/producto-detalle.png" alt="Detalle del cabezal y pantalla" />
+          <span class="tagp" data-i18n="det_tag">Detalle · cabezal Ice Cool</span>
+        </div>
+      </div>
+
+      <div class="product-info reveal" style="--d:.1s">
+        <div class="kicker">
+          <span class="pill" data-i18n="pill_new">Nuevo · Serie 04</span>
+          <span class="eyebrow" data-i18n="pill_code">REF · LS-04 / IPL</span>
+        </div>
+        <h3><span data-i18n="prod_h_a">Lumière 04</span> <em data-i18n="prod_h_b">— el modelo completo</em></h3>
+        <p class="desc" data-i18n="prod_desc">Nuestro modelo insignia. Cinco niveles de intensidad, cabezal refrigerado, cinco adaptadores incluidos para rostro, axilas, piernas, brazos y zona íntima.</p>
+
+        <div class="specs">
+          <div class="spec"><span class="k" data-i18n="sp1_k">Energía máx.</span><span class="v">22 J/cm²</span></div>
+          <div class="spec"><span class="k" data-i18n="sp2_k">Niveles</span><span class="v">5</span></div>
+          <div class="spec"><span class="k" data-i18n="sp3_k">Flashes</span><span class="v">999K</span></div>
+          <div class="spec"><span class="k" data-i18n="sp4_k">Refrigeración</span><span class="v">–4 °C</span></div>
+          <div class="spec"><span class="k" data-i18n="sp5_k">Adaptadores</span><span class="v">5</span></div>
+          <div class="spec"><span class="k" data-i18n="sp6_k">Peso</span><span class="v">340 g</span></div>
+        </div>
+
+        <div class="buy-row">
+          <div class="price">
+            <span class="now">299€</span>
+            <span class="was">399€</span>
+            <span class="save" data-i18n="save">−100€</span>
+          </div>
+          <a class="btn-cart" href="#">
+            <span data-i18n="buy">Añadir al carrito</span>
+            <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.4"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="sec" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="label">
+        <span class="sec-ix">03</span>
+        <span class="eyebrow" data-i18n="sec_how_eye">Cómo funciona</span>
+      </div>
+      <h2><span data-i18n="sec_how_h_a">Tres gestos,</span> <em data-i18n="sec_how_h_b">doce semanas</em>.</h2>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal">
+        <span class="num-big"><em>01</em></span>
+        <h4 data-i18n="st1_h">Prepara la zona</h4>
+        <p data-i18n="st1_p">Piel limpia, seca y rasurada. Sin cremas, sin perfume. Tres minutos y listo para empezar.</p>
+        <div class="meta"><span data-i18n="st1_m1">Tiempo <em>3 min</em></span><span data-i18n="st1_m2">Frecuencia <em>1× sem</em></span></div>
+      </div>
+      <div class="step reveal" style="--d:.1s">
+        <span class="num-big"><em>02</em></span>
+        <h4 data-i18n="st2_h">Desliza el cabezal</h4>
+        <p data-i18n="st2_p">El sensor elige la intensidad por ti. Un clic, un destello. Pierna completa en diez minutos.</p>
+        <div class="meta"><span data-i18n="st2_m1">Zona <em>10 min</em></span><span data-i18n="st2_m2">Nivel <em>Auto</em></span></div>
+      </div>
+      <div class="step reveal" style="--d:.2s">
+        <span class="num-big"><em>03</em></span>
+        <h4 data-i18n="st3_h">Repite y olvídalo</h4>
+        <p data-i18n="st3_p">Una sesión por semana durante doce semanas. Después, un mantenimiento mensual y ya.</p>
+        <div class="meta"><span data-i18n="st3_m1">Plan <em>12 sem</em></span><span data-i18n="st3_m2">Mant. <em>1× mes</em></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="sec" id="results">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="label">
+        <span class="sec-ix">04</span>
+        <span class="eyebrow" data-i18n="sec_res_eye">Resultados</span>
+      </div>
+      <h2><span data-i18n="sec_res_h_a">La piel no miente.</span> <em data-i18n="sec_res_h_b">Ni la gente que la cuida.</em></h2>
+    </div>
+
+    <div class="results-grid">
+      <div class="compare reveal" id="compare" aria-label="Comparador antes y después">
+        <div class="pane before" aria-hidden="true"></div>
+        <div class="pane after" aria-hidden="true"></div>
+        <span class="tagp a" data-i18n="before">Semana 0</span>
+        <span class="tagp b" data-i18n="after">Semana 12</span>
+        <div class="handle" id="compareHandle"></div>
+      </div>
+
+      <div class="results-side reveal" style="--d:.1s">
+        <div class="timeline">
+          <div class="tl-row"><span class="w" data-i18n="w_0">Sem&nbsp;0</span><span class="t"><span data-i18n="tl1">Primera sesión</span> <em data-i18n="tl1b">· piel base</em></span><span class="pct">—</span></div>
+          <div class="tl-row"><span class="w" data-i18n="w_3">Sem&nbsp;3</span><span class="t"><span data-i18n="tl2">Vello más fino</span></span><span class="pct">−28%</span></div>
+          <div class="tl-row"><span class="w" data-i18n="w_6">Sem&nbsp;6</span><span class="t"><span data-i18n="tl3">Crecimiento lento</span></span><span class="pct">−54%</span></div>
+          <div class="tl-row"><span class="w" data-i18n="w_9">Sem&nbsp;9</span><span class="t"><span data-i18n="tl4">Zonas casi limpias</span></span><span class="pct">−78%</span></div>
+          <div class="tl-row done"><span class="w" data-i18n="w_12">Sem&nbsp;12</span><span class="t"><span data-i18n="tl5">Resultado duradero</span></span><span class="pct">−93%</span></div>
+        </div>
+
+        <div class="quote">
+          <q data-i18n="quote">La primera vez que algo cumplía lo que prometía en la caja. A la sexta sesión ya no pensaba en ello — y ese es el punto.</q>
+          <div class="who">
+            <span class="av"></span>
+            <span data-i18n="quote_who">Marta, Valencia · Verificada</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="sec" id="blog">
+  <div class="wrap">
+    <div class="blog-head reveal">
+      <h2><span data-i18n="blog_h_a">Diario de piel.</span><br/><em data-i18n="blog_h_b">Rutinas, respuestas, ritual.</em></h2>
+      <a class="link" href="#" data-i18n="blog_all">
+        Ver todos los posts
+        <svg width="12" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.4"/></svg>
+      </a>
+    </div>
+
+    <div class="blog-grid">
+      <a class="post hero-post reveal" href="#">
+        <div class="cover">
+          <img src="assets/hero.png" alt="Rutina IPL en casa" />
+          <span class="cat" data-i18n="cat_guide">Guía</span>
+        </div>
+        <div class="body">
+          <div class="meta"><span data-i18n="m_read">8 min lectura</span><span>·</span><span data-i18n="m_date">12 abr 2026</span></div>
+          <h3 data-i18n="post1_h">La guía honesta para empezar IPL en casa sin miedo.</h3>
+          <p data-i18n="post1_p">Todo lo que no te cuentan: pieles para las que funciona, cuándo verás resultados, y los tres errores que arruinan las primeras sesiones.</p>
+        </div>
+      </a>
+
+      <a class="post reveal" href="#" style="--d:.08s">
+        <div class="cover">
+          <img src="assets/producto-detalle.png" alt="Detalle del cabezal" style="object-position: center 45%" />
+          <span class="cat" data-i18n="cat_science">Ciencia</span>
+        </div>
+        <div class="body">
+          <div class="meta"><span data-i18n="m_read2">5 min</span><span>·</span><span data-i18n="m_date2">28 mar</span></div>
+          <h3 data-i18n="post2_h">IPL vs láser diodo: qué cambia, qué no.</h3>
+          <p data-i18n="post2_p">Dos tecnologías, mucha confusión. Lo resumimos en una tabla.</p>
+        </div>
+      </a>
+
+      <a class="post reveal" href="#" style="--d:.16s">
+        <div class="cover">
+          <img src="assets/despues.png" alt="Piel después" style="object-position: center 35%" />
+          <span class="cat" data-i18n="cat_ritual">Ritual</span>
+        </div>
+        <div class="body">
+          <div class="meta"><span data-i18n="m_read3">4 min</span><span>·</span><span data-i18n="m_date3">19 mar</span></div>
+          <h3 data-i18n="post3_h">Piel después de la sesión: qué sí, qué no.</h3>
+          <p data-i18n="post3_p">Ingredientes amigos, el protector solar, y por qué tu crema favorita puede esperar.</p>
+        </div>
+      </a>
+
+      <a class="post reveal" href="#" style="--d:.24s">
+        <div class="cover">
+          <img src="assets/producto-34.png" alt="Dispositivo 3/4" style="object-position: center 50%" />
+          <span class="cat" data-i18n="cat_guide2">Guía</span>
+        </div>
+        <div class="body">
+          <div class="meta"><span data-i18n="m_read4">6 min</span><span>·</span><span data-i18n="m_date4">4 mar</span></div>
+          <h3 data-i18n="post4_h">Depilar zonas sensibles: el manual paso a paso.</h3>
+          <p data-i18n="post4_p">Bozo, axilas, bikini: intensidades, ángulos y cadencia recomendada.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="wrap">
+  <section class="cta reveal">
+    <div class="sw"></div>
+    <div class="cta-inner">
+      <h2>
+        <span data-i18n="cta_h_a">Menos cuchilla,</span><br/>
+        <em data-i18n="cta_h_b">menos cera,</em><br/>
+        <span data-i18n="cta_h_c">más tiempo</span><span class="ac">.</span>
+      </h2>
+      <div class="cta-side">
+        <p data-i18n="cta_side">Envío gratuito y en 24–48h. Devolución sin preguntas durante 60 días. Financiación en 3 pagos sin intereses.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#product">
+            <span data-i18n="cta_primary2">Elegir mi dispositivo</span>
+            <span class="arr">
+              <svg width="12" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5h12M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.4"/></svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <a class="brand" href="#" aria-label="ipllaserstore">
+          <img class="brand-logo" src="assets/logo.svg" alt="ipllaserstore" />
+        </a>
+        <div class="tag" data-i18n="ft_tag">Piel tuya, <em>a tu ritmo</em>. Depilación IPL de uso profesional desde casa.</div>
+      </div>
+      <div class="ft-col">
+        <h4 data-i18n="ft_c1">Tienda</h4>
+        <ul>
+          <li><a href="#" data-i18n="ft_c1_1">Lumière 04</a></li>
+          <li><a href="#" data-i18n="ft_c1_2">Accesorios</a></li>
+          <li><a href="#" data-i18n="ft_c1_3">Financiación</a></li>
+          <li><a href="#" data-i18n="ft_c1_4">Tarjeta regalo</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4 data-i18n="ft_c2">Soporte</h4>
+        <ul>
+          <li><a href="#" data-i18n="ft_c2_1">Guía de uso</a></li>
+          <li><a href="#" data-i18n="ft_c2_2">Envíos</a></li>
+          <li><a href="#" data-i18n="ft_c2_3">Garantía 2 años</a></li>
+          <li><a href="#" data-i18n="ft_c2_4">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4 data-i18n="ft_c3">Diario</h4>
+        <ul>
+          <li><a href="#" data-i18n="ft_c3_1">Blog</a></li>
+          <li><a href="#" data-i18n="ft_c3_2">Rituales</a></li>
+          <li><a href="#" data-i18n="ft_c3_3">Testimonios</a></li>
+          <li><a href="#" data-i18n="ft_c3_4">Newsletter</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <span>© 2026 ipllaserstore</span>
+      <span data-i18n="ft_made">Hecho con cuidado · Madrid</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // reveal
+  const io = new IntersectionObserver((entries)=>{
+    for (const e of entries){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // parallax on hero photo
+  const par = document.querySelector('[data-parallax]');
+  if (par){
+    const onScroll = () => {
+      const r = par.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const pct = (r.top - vh) / vh;
+      par.style.transform = `scale(1.08) translateY(${pct * -20}px)`;
+    };
+    document.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+  }
+
+  // before/after compare
+  const cmp = document.getElementById('compare');
+  let dragging = false;
+  const setClip = (x) => {
+    const rect = cmp.getBoundingClientRect();
+    const pct = Math.max(4, Math.min(96, ((x - rect.left) / rect.width) * 100));
+    cmp.style.setProperty('--clip', pct + '%');
+  };
+  cmp.addEventListener('mousedown', (e)=>{ dragging = true; setClip(e.clientX); });
+  window.addEventListener('mousemove', (e)=>{ if(dragging) setClip(e.clientX); });
+  window.addEventListener('mouseup', ()=> dragging = false);
+  cmp.addEventListener('touchstart', (e)=>{ dragging = true; setClip(e.touches[0].clientX); }, {passive:true});
+  cmp.addEventListener('touchmove', (e)=>{ if(dragging) setClip(e.touches[0].clientX); }, {passive:true});
+  cmp.addEventListener('touchend', ()=> dragging = false);
+  cmp.style.setProperty('--clip', '48%');
+
+  // i18n
+  const I18N = { es: {}, en: {
+    nav_why:"Why IPL", nav_product:"Device", nav_how:"How it works", nav_results:"Results", nav_blog:"Journal", nav_cta:"Shop",
+    ch1:"Free 24–48h shipping", ch2:"2-year warranty", ch3:"60-day returns",
+    hero_meta:"★ 4.9 · 12,480 customers · Verified reviews",
+    hero_eyebrow:"Home IPL · 2026 Edition",
+    h1_l1:"Your skin,", h1_l2:"on your time", h1_l3:"No", h1_l4:"rush.",
+    lead:"Professional-grade IPL devices, designed for home routines. <em>No appointments, no pain, no rush</em> — visible results from the third session.",
+    cta_primary:"See devices", cta_secondary:"How it works",
+    stat_flashes:"Flashes", stat_reduction:"Reduction", stat_warranty:"Warranty",
+    ph_hero:"[ lifestyle photo · skin at home ]",
+    hero_badge:"Live · 4,812 orders this month",
+    flo1_k:"Ice Cool", flo2_k:"Session", flo2_v:"10 min",
+    mq1:"Painless", mq2:"Safe on sensitive skin", mq3:"Unlimited home use", mq4:"Lasting results", mq5:"Ice Cool technology",
+    sec_why_eye:"Why IPL", sec_why_h_a:"The method the clinic", sec_why_h_b:"never wanted to share",
+    b1_h:"Precise <em>pulsed light</em>.", b1_p:"Each flash targets the follicle without touching the surrounding skin. Fast, focused, repeatable.",
+    b2_h:"Real Ice Cool, <em>−4 °C</em>.", b2_p:"The head chills the skin at the very moment of the pulse. No redness, no waiting around with cold gel.",
+    b3_h:"999,000 <em>flashes</em>.", b3_p:"A lifespan designed so you buy once — and share it with whoever you like.",
+    b4_h:"Skin <em>sensor</em>.", b4_p:"Automatically adjusts intensity to your tone. Fair, medium or olive — all taken care of.",
+    sec_prod_eye:"Featured device", sec_prod_h_a:"One device,", sec_prod_h_b:"built to last",
+    pill_new:"New · Series 04", pill_code:"REF · LS-04 / IPL",
+    prod_h_a:"Lumière 04", prod_h_b:"— the complete model",
+    prod_desc:"Our flagship. Five intensity levels, cooled head, and five adapters included for face, underarms, legs, arms and intimate area.",
+    sp1_k:"Max energy", sp2_k:"Levels", sp3_k:"Flashes", sp4_k:"Cooling", sp5_k:"Adapters", sp6_k:"Weight",
+    save:"−€100", buy:"Add to cart",
+    sec_how_eye:"How it works", sec_how_h_a:"Three gestures,", sec_how_h_b:"twelve weeks",
+    st1_h:"Prep the area", st1_p:"Clean, dry, shaved skin. No creams, no perfume. Three minutes and you're ready.", st1_m1:"Time <em>3 min</em>", st1_m2:"Cadence <em>1× wk</em>",
+    st2_h:"Glide the head", st2_p:"The sensor picks the intensity for you. One click, one flash. A full leg in ten minutes.", st2_m1:"Zone <em>10 min</em>", st2_m2:"Level <em>Auto</em>",
+    st3_h:"Repeat, then forget", st3_p:"One session a week for twelve weeks. After that, a monthly touch-up and you're done.", st3_m1:"Plan <em>12 wk</em>", st3_m2:"Maint. <em>1× mo</em>",
+    sec_res_eye:"Results", sec_res_h_a:"Skin doesn't lie.", sec_res_h_b:"Neither do the people who care for it.",
+    before:"Week 0", after:"Week 12",
+    w_0:"Wk 0", w_3:"Wk 3", w_6:"Wk 6", w_9:"Wk 9", w_12:"Wk 12",
+    tl1:"First session", tl1b:"· baseline skin", tl2:"Hair growing finer", tl3:"Slower regrowth", tl4:"Areas nearly clear", tl5:"Lasting result",
+    quote:"First time something actually delivered what was printed on the box. By the sixth session I just wasn't thinking about it anymore — which is the whole point.",
+    quote_who:"Marta, Valencia · Verified",
+    blog_h_a:"Skin journal.", blog_h_b:"Routines, answers, ritual.",
+    blog_all:"See all posts",
+    cat_guide:"Guide", cat_science:"Science", cat_ritual:"Ritual", cat_guide2:"Guide",
+    ph_post1:"[ image · IPL home routine ]", ph_post2:"[ image · follicle macro ]", ph_post3:"[ image · post-session care ]", ph_post4:"[ image · safe intimate zone ]",
+    m_read:"8 min read", m_date:"Apr 12, 2026",
+    m_read2:"5 min", m_date2:"Mar 28",
+    m_read3:"4 min", m_date3:"Mar 19",
+    m_read4:"6 min", m_date4:"Mar 4",
+    post1_h:"The honest guide to starting IPL at home without the jitters.",
+    post1_p:"All the things no one tells you: skin types it works on, when you'll see results, and the three mistakes that ruin early sessions.",
+    post2_h:"IPL vs diode laser: what changes, what doesn't.",
+    post2_p:"Two technologies, lots of confusion. Summed up in one table.",
+    post3_h:"Skin after a session: do's and don'ts.",
+    post3_p:"Friendly ingredients, SPF, and why your favorite cream can wait.",
+    post4_h:"Treating sensitive areas: a step-by-step manual.",
+    post4_p:"Upper lip, underarms, bikini: intensities, angles and recommended cadence.",
+    cta_h_a:"Less razor,", cta_h_b:"less wax,", cta_h_c:"more time",
+    cta_side:"Free 24–48h shipping. 60-day no-questions returns. 3 interest-free payments available.",
+    cta_primary2:"Pick my device",
+    ft_tag:"Your skin, <em>on your time</em>. Professional-grade IPL from home.",
+    ft_c1:"Shop", ft_c1_1:"Lumière 04", ft_c1_2:"Accessories", ft_c1_3:"Financing", ft_c1_4:"Gift card",
+    ft_c2:"Support", ft_c2_1:"How-to guide", ft_c2_2:"Shipping", ft_c2_3:"2-year warranty", ft_c2_4:"Contact",
+    ft_c3:"Journal", ft_c3_1:"Blog", ft_c3_2:"Rituals", ft_c3_3:"Testimonials", ft_c3_4:"Newsletter",
+    ft_made:"Made with care · Madrid",
+    det_tag:"Detail · Ice Cool head"
+  }};
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ I18N.es[el.dataset.i18n] = el.innerHTML; });
+  let lang = 'es';
+  const setLang = (l) => {
+    lang = l; document.documentElement.lang = l;
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.dataset.i18n;
+      if (I18N[l] && I18N[l][key] !== undefined) el.innerHTML = I18N[l][key];
+    });
+    document.getElementById('lang-cur').textContent = l.toUpperCase();
+    document.getElementById('lang-alt').textContent = (l==='es'?'EN':'ES');
+  };
+  document.getElementById('lang').addEventListener('click', ()=> setLang(lang==='es' ? 'en' : 'es'));
+</script>
+
+</body>
+</html>

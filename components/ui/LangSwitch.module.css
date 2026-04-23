@@ -1,0 +1,30 @@
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-round);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.cur {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.sep {
+  color: var(--line-2);
+  padding: 0 2px;
+}

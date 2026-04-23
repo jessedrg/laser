@@ -1,0 +1,84 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 22px 0 26px;
+  border-radius: var(--r-round);
+  font-size: 13.5px;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition:
+    transform 0.25s ease,
+    background 0.25s,
+    color 0.25s,
+    border-color 0.25s,
+    box-shadow 0.25s;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.primary {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  box-shadow: 0 10px 24px -10px color-mix(in oklab, var(--ink) 60%, transparent);
+}
+
+.primary:hover {
+  background: var(--accent-ink);
+  border-color: var(--accent-ink);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 30px -10px color-mix(in oklab, var(--accent-ink) 50%, transparent);
+}
+
+.ghost {
+  background: color-mix(in oklab, var(--cream) 70%, transparent);
+  color: var(--ink);
+  border-color: var(--line-2);
+  backdrop-filter: blur(6px);
+}
+
+.ghost:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.onDark {
+  background: var(--bg);
+  color: var(--ink);
+  border-color: var(--bg);
+}
+
+.onDark:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.arr {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+}
+
+.primary .arr,
+.onDark .arr {
+  background: color-mix(in oklab, var(--bg) 18%, transparent);
+}
+
+.ghost .arr {
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+}
+
+.btn:hover .arr {
+  transform: translateX(4px) rotate(-2deg);
+}
