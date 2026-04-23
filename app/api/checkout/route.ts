@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-export async function POST() {
+export async function POST(req: Request) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
     return NextResponse.json({ error: 'STRIPE_SECRET_KEY not configured' }, { status: 500 });
   }
+
+  const body = await req.json().catch(() => ({}));
+  const quantity = Math.max(1, Math.min(10, Number(body.quantity) || 1));
 
   const stripe = new Stripe(secretKey);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
@@ -25,7 +28,7 @@ export async function POST() {
             },
             unit_amount: 8900,
           },
-          quantity: 1,
+          quantity,
         },
       ],
       shipping_address_collection: {

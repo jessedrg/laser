@@ -3,17 +3,23 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { RichText, useT } from '@/lib/i18n';
+import { useCart } from '@/lib/cart';
 import { SectionHead } from './SectionHead';
 import styles from './Product.module.css';
 
 export function Product() {
   const t = useT();
+  const { count, add } = useCart();
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
     setLoading(true);
     try {
-      const res = await fetch('/api/checkout', { method: 'POST' });
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: count > 0 ? count : 1 }),
+      });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
     } finally {
@@ -88,23 +94,35 @@ export function Product() {
                 <span className={styles.now}>89€</span>
                 <span className={styles.shipping}>{t('shipping_free')}</span>
               </div>
-              <button
-                type="button"
-                className={styles.cartBtn}
-                onClick={handleCheckout}
-                disabled={loading}
-              >
-                <span>{loading ? '...' : t('buy')}</span>
-                {!loading && (
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                    <path
-                      d="M1 5h12M9 1l4 4-4 4"
-                      stroke="currentColor"
-                      strokeWidth="1.4"
-                    />
-                  </svg>
-                )}
-              </button>
+              <div className={styles.btns}>
+                <button
+                  type="button"
+                  className={styles.addBtn}
+                  onClick={add}
+                >
+                  {t('add_to_cart')}
+                  {count > 0 && (
+                    <span className={styles.cartBadge}>{count}</span>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className={styles.buyBtn}
+                  onClick={handleCheckout}
+                  disabled={loading}
+                >
+                  <span>{loading ? '...' : t('buy')}</span>
+                  {!loading && (
+                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                      <path
+                        d="M1 5h12M9 1l4 4-4 4"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

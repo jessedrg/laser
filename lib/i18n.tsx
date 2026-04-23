@@ -85,6 +85,7 @@ const es: Dict = {
   sp6_k: 'Peso',
   save: '−100€',
   buy: 'Comprar ahora',
+  add_to_cart: 'Añadir al carrito',
   shipping_free: 'Envío gratuito · 24–48h',
 
   // How
@@ -247,6 +248,7 @@ const en: Dict = {
   sp6_k: 'Weight',
   save: '−€100',
   buy: 'Buy now',
+  add_to_cart: 'Add to cart',
   shipping_free: 'Free shipping · 24–48h',
 
   sec_how_eye: 'How it works',
