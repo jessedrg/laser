@@ -1,13 +1,12 @@
 'use client';
 
-import {
+import React, {
   createContext,
   useCallback,
   useContext,
   useMemo,
   useState,
   type ReactNode,
-  type JSX,
 } from 'react';
 
 export type Locale = 'es' | 'en';
