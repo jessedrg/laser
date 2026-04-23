@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
 import { I18nProvider } from '@/lib/i18n';
 import { CartProvider } from '@/lib/cart';
+import { WhatsAppBubble } from '@/components/WhatsAppBubble';
 import './globals.css';
 
 const fraunces = Fraunces({
@@ -43,6 +44,7 @@ export default function RootLayout({
         <I18nProvider>
           <CartProvider>{children}</CartProvider>
         </I18nProvider>
+        <WhatsAppBubble />
       </body>
     </html>
   );
