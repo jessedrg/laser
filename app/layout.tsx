@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
 import { I18nProvider } from '@/lib/i18n';
 import { CartProvider } from '@/lib/cart';
@@ -45,6 +46,18 @@ export default function RootLayout({
           <CartProvider>{children}</CartProvider>
         </I18nProvider>
         <WhatsAppBubble />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-16741652529"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-16741652529');
+          `}
+        </Script>
       </body>
     </html>
   );
