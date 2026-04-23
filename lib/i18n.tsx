@@ -84,7 +84,8 @@ const es: Dict = {
   sp5_k: 'Adaptadores',
   sp6_k: 'Peso',
   save: '−100€',
-  buy: 'Añadir al carrito',
+  buy: 'Comprar ahora',
+  shipping_free: 'Envío gratuito · 24–48h',
 
   // How
   sec_how_eye: 'Cómo funciona',
@@ -245,7 +246,8 @@ const en: Dict = {
   sp5_k: 'Adapters',
   sp6_k: 'Weight',
   save: '−€100',
-  buy: 'Add to cart',
+  buy: 'Buy now',
+  shipping_free: 'Free shipping · 24–48h',
 
   sec_how_eye: 'How it works',
   sec_how_h_a: 'Three gestures,',

@@ -244,20 +244,12 @@
   font-weight: 300;
   letter-spacing: -0.02em;
 }
-.was {
-  color: color-mix(in oklab, var(--bg) 60%, transparent);
-  text-decoration: line-through;
-  font-size: 14px;
-}
-.save {
+.shipping {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: oklch(0.80 0.12 55);
-  padding: 4px 10px;
-  background: color-mix(in oklab, var(--accent) 40%, transparent);
-  border-radius: var(--r-round);
+  color: var(--ink-3);
 }
 
 .cartBtn {
@@ -275,8 +267,12 @@
   font-family: inherit;
   transition: transform 0.2s;
 }
-.cartBtn:hover {
+.cartBtn:hover:not(:disabled) {
   transform: translateY(-2px);
+}
+.cartBtn:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .cartBadge {

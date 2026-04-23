@@ -3,13 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useT } from '@/lib/i18n';
-import { useCart } from '@/lib/cart';
 import { LangSwitch } from './ui/LangSwitch';
 import styles from './Nav.module.css';
 
 export function Nav() {
   const t = useT();
-  const { count } = useCart();
   return (
     <nav className={styles.nav}>
       <div className={styles.inner}>
@@ -32,9 +30,6 @@ export function Nav() {
           <LangSwitch />
           <a href="#product" className={styles.cta}>
             {t('nav_cta')}
-            {count > 0 && (
-              <span className={styles.badge}>{count}</span>
-            )}
           </a>
         </div>
       </div>

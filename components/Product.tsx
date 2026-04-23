@@ -1,14 +1,25 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import { RichText, useT } from '@/lib/i18n';
-import { useCart } from '@/lib/cart';
 import { SectionHead } from './SectionHead';
 import styles from './Product.module.css';
 
 export function Product() {
   const t = useT();
-  const { count: cartCount, add: addToCart } = useCart();
+  const [loading, setLoading] = useState(false);
+
+  async function handleCheckout() {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/checkout', { method: 'POST' });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const specs: Array<{ k: Parameters<ReturnType<typeof useT>>[0]; v: string }> = [
     { k: 'sp1_k', v: '22 J/cm²' },
@@ -74,17 +85,17 @@ export function Product() {
 
             <div className={styles.buyRow}>
               <div className={styles.price}>
-                <span className={styles.now}>299€</span>
-                <span className={styles.was}>399€</span>
-                <span className={styles.save}>{t('save')}</span>
+                <span className={styles.now}>89€</span>
+                <span className={styles.shipping}>{t('shipping_free')}</span>
               </div>
-              <div className={styles.cartWrap}>
-                <button
-                  type="button"
-                  className={styles.cartBtn}
-                  onClick={addToCart}
-                >
-                  <span>{t('buy')}</span>
+              <button
+                type="button"
+                className={styles.cartBtn}
+                onClick={handleCheckout}
+                disabled={loading}
+              >
+                <span>{loading ? '...' : t('buy')}</span>
+                {!loading && (
                   <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
                     <path
                       d="M1 5h12M9 1l4 4-4 4"
@@ -92,11 +103,8 @@ export function Product() {
                       strokeWidth="1.4"
                     />
                   </svg>
-                </button>
-                {cartCount > 0 && (
-                  <span className={styles.cartBadge}>{cartCount}</span>
                 )}
-              </div>
+              </button>
             </div>
           </div>
         </div>
