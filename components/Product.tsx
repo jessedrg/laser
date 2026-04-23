@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { RichText, useT } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
+import { reportPurchaseConversion } from '@/lib/gtag';
 import { SectionHead } from './SectionHead';
 import styles from './Product.module.css';
 
@@ -13,6 +14,7 @@ export function Product() {
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
+    reportPurchaseConversion(count > 0 ? count * 89 : 89);
     setLoading(true);
     try {
       const res = await fetch('/api/checkout', {

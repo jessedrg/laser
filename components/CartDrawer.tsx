@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useCart } from '@/lib/cart';
 import { useT } from '@/lib/i18n';
+import { reportPurchaseConversion } from '@/lib/gtag';
 import styles from './CartDrawer.module.css';
 
 export function CartDrawer() {
@@ -12,6 +13,7 @@ export function CartDrawer() {
   const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
+    reportPurchaseConversion(count * 89);
     setLoading(true);
     try {
       const res = await fetch('/api/checkout', {
